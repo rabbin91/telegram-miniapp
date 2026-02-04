@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Telegram Mini App</title>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script type="module" src="./config.js"></script>
+
+  <style>
+    body {
+      background: #0f0f0f;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+    }
+    button {
+      background: #2ea6ff;
+      color: white;
+      border: none;
+      padding: 14px 30px;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    pre {
+      text-align: left;
+      background: #1e1e1e;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Mini App Telegram</h1>
+  <p>Connexion sécurisée via Telegram</p>
+
+  <button onclick="sendData()">Envoyer mes infos</button>
+
+  <pre id="result"></pre>
+
+  <script type="module">
+    import { CONFIG } from "./config.js";
+
+    const tg = Telegram.WebApp;
+    tg.expand();
+
+    async function sendData() {
+      const response = await fetch(`${CONFIG.BACKEND_URL}/auth`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          initData: tg.initData
+        })
+      });
+
+      const data = await response.json();
+      document.getElementById("result").textContent =
+        JSON.stringify(data, null, 2);
+    }
+  </script>
+
+</body>
+</html>
